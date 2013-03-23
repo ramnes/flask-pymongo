@@ -146,6 +146,7 @@ class PyMongo(object):
             app.config[key('PASSWORD')] = parsed['password']
             app.config[key('REPLICA_SET')] = parsed['options'].get('replica_set')
             app.config[key('MAX_POOL_SIZE')] = parsed['options'].get('max_pool_size')
+            app.config[key('TZ_AWARE')] = parsed['options'].get('tz_aware', False)
 
             # we will use the URI for connecting instead of HOST/PORT
             app.config.pop(key('HOST'), None)
@@ -158,6 +159,7 @@ class PyMongo(object):
             app.config.setdefault(key('DBNAME'), app.name)
             app.config.setdefault(key('READ_PREFERENCE'), None)
             app.config.setdefault(key('AUTO_START_REQUEST'), True)
+            app.config.setdefault(key('TZ_AWARE'), False)
 
             # these don't have defaults
             app.config.setdefault(key('USERNAME'), None)
@@ -200,7 +202,7 @@ class PyMongo(object):
         args = [host]
         kwargs = {
             'read_preference': read_preference,
-            'tz_aware': True,
+            'tz_aware': app.config[key('TZ_AWARE')]
         }
 
         kwargs['auto_start_request'] = auto_start_request
